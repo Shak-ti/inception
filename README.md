@@ -21,11 +21,23 @@ A container is a runnable instance of an image. You can manage it using Docker C
 ### Virtual Machines vs Docker :
 A container virtualizes the kernel, not the whole machine. So it runs on the same kernel as the host OS, while the VM has its own kernel
 With a VM, every piece of hardware is virtualized
+
 ### Secrets vs Environment Variables :
 
 ### Docker Network vs Host Network :
 
 ### Docker Volumes vs Bind Mounts :
+
+### Services :
+Each service is in a separate container.
+We have :
+- MariaDb, for the database
+- Wordpress,
+- NGINX, a services that get HTTP requests, and work with wordpress to send responses to the client
+
+
+### Docker compose
+Similarly to a makefile, it is the file thas lauch the 3 containers and connect them
 
 ## INSTRUCTIONS
 ## RESOURCES
