@@ -3,23 +3,29 @@ version: "3"
 services:
 
   mariadb:
-    image: mariadb
+    image: mariadb:12.2.2
     restart: always
     # environment:
     #   MARIADB_ROOT_PASSWORD: example
     networks:
       - monreseau
+    volumes:
+      - mariadbvolume
+    ports:
+      - '8080:9000'
 
   nginx:
-    image: nginx
+    image: nginx:1.29.7
     depends_on:
       - mariadb
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
+  wordpress:
+    image: wordpress:6.9.4
+    depends_on:
+      - mariadb
 
 networks:
-  monreseau:
+  - monreseau
+
+volumes:
+  - mariadbvolume

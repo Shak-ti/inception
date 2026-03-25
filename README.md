@@ -22,6 +22,26 @@ A container is a runnable instance of an image. You can manage it using Docker C
 A container virtualizes the kernel, not the whole machine. So it runs on the same kernel as the host OS, while the VM has its own kernel
 With a VM, every piece of hardware is virtualized
 
+Bare metal : laptop, raspberry pi, ...
+	notre application parle au kernel, qui a directement accès aux ressources matérielles (mémoire, cpu, ram, disque dur, carte réseau)
+	app -> os -> ressources
+
+VM : Fonctionne grâce à un hyperviseur (programme qui va faire semblant qu'on est dans une machine physique)
+	notre app parle à l'hyperviseur
+	Virtual Box etc : hyperviseur de type 2 -> bcp de perte de performances
+	type 1 : app -> os de la vm -> hyperviseur (au même niveau que ton os) -> ressources
+	type 2 : app -> os de la vm -> hyperviseur (= application sur ton os) -> os -> ressources
+
+micro vm (Firecracker): pas de bios, pas de driver pour périphériques, pas de gpu, cartes réseaux, ..., pas de SystemD et de boot de tous les programmes -> on envele tout ce qui ne sert pas à notre application
+	ultra léger, mais aussi isolé qu'une vm
+	conteneur dans micro vm pour le meilleur compromis sécurité et performance
+
+Conteneur : fonctionnalité du kernel linux (cgroups) qui permet de démarer une application sans qu'elle puisse voir autre chose que ce qu'il y a dans le cgroup
+	Elle parle donc directement au kernel : app (isolée) -> kernel -> ressources
+	C'est donc la même version du kernel
+	App container (docker, kubernetes, ...) : Seule l'app et ce dont elle a besoin tourne sur le conteneur
+	System container (LXC): Application et OS à l'interieur du conteneur
+
 ### Secrets vs Environment Variables :
 
 ### Docker Network vs Host Network :
