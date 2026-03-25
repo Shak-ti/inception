@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  mariadb:
+    image: mariadb
+    restart: always
+    # environment:
+    #   MARIADB_ROOT_PASSWORD: example
+    networks:
+      - monreseau
+
+  nginx:
+    image: nginx
+    depends_on:
+      - mariadb
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+
+networks:
+  monreseau:
