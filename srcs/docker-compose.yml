@@ -1,31 +1,87 @@
-version: "3"
-
+# Top level sections:
 services:
-
+#  service:
+#   attribute:
+#     - list syntax = blabla
+#   other attribute:
+#     mapping syntax: blabla
   mariadb:
     image: mariadb:12.2.2
+    container_name: "mariadb"
     restart: always
-    # environment:
-    #   MARIADB_ROOT_PASSWORD: example
     networks:
-      - monreseau
-    volumes:
-      - mariadbvolume
-    ports:
-      - '8080:9000'
-
-  nginx:
-    image: nginx:1.29.7
-    depends_on:
-      - mariadb
+      - mynetwork
+    volumes: # path in the container
+      - db:/var/lib/mysqlf:Z # mariadb writes in /var/lib/mysql by default
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    env_file: ".env"
+    environment: # set up the environment variables
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/rootpass # password for MariaDB root superuser account (_FILE is a convention because i'm using secrets)
+      - MYSQL_PASSWORD_FILE=/run/secrets/userpass
+    secrets:
+      - userpass
+      - rootpass
 
   wordpress:
     image: wordpress:6.9.4
+    container_name: "wordpress"
+    restart: always
+    expose: # used to define container ports that are exposed for communicating internally with other containers on the same network
+      - "9000"
+      - "3306"
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy # compose also removes services in dependency order (wordpress before mariadb)
+    env_file: ".env"
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: user
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/userpass
+      WORDPRESS_DB_NAME: db
+    secrets:
+      - userpass
+    volumes:
+      - wordpress:/etc/data
+    networks:
+      - mynetwork
+
+  nginx:
+    image: nginx:1.29.7
+    container_name: "nginx"
+    depends_on:
+      wordpress
+    volumes:
+      - wordpress:/etc/data
+    networks:
+      - mynetwork
+    restart: always
+    ports: # port mapping between host machine and container
+      - "8080:443"
+    expose:
+      - "9000"
 
 networks:
-  - monreseau
+  mynetwork:
+    name: "mynetwork"
 
+# configure named volumes that can be reused across multiple services
 volumes:
-  - mariadbvolume
+  db:
+    name: db
+  wordpress:
+    name: wordpress
+
+# this top-level secrets section defines the variables userpass and rootpass, and provides the file that populates their values
+# the deployment of each container means Docker creates a bind mount under /run/secrets/<secret_name>
+secrets:
+  userpass:
+    file: secrets/db_password.txt
+  rootpass:
+    file: secrets/db_root_password.txt
