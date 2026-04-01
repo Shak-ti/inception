@@ -139,7 +139,11 @@ Similarly to a makefile, it is the file thas lauch the 3 containers and connect 
 - https://docker-curriculum.com/
 - Mariadb documentation : https://mariadb.com/docs/
 - NGINX documentation : https://nginx.org/en/docs/
-- Cocadmin Youtube Channel : 
+- Cocadmin tutorials on docker : https://youtube.com/playlist?list=PL8SZiccjllt1jz9DsD4MPYbbiGOR_FYHu&si=iJ8u-v3EGz3BohMr
+- Docker tutorial : https://youtube.com/playlist?list=PL4cUxeGkcC9hxjeEtdHFNYMtCpjNBm3h7&si=yv3npuXCnlkEsObe
 - Article on environment variables : https://medium.com/@kilamaelie beginners-guide-to-environment-variables-with-docker-f716f65af5ec
 - About networks : https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/docker/network/#vue-densemble-des-types-de-r%C3%A9seaux
 - Docker Hub for the documentation on the official images
+- Difference between ENTRYPOINT and CMD : https://stackoverflow.com/questions/21553353/what-is-the-difference-between-cmd-and-entrypoint-in-a-dockerfile
+- About Docker compose Makefile : https://medium.com/freestoneinfotech/simplifying-docker-compose-operations-using-makefile-26d451456d63
+

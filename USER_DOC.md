@@ -38,8 +38,9 @@ docker search : search for images directly from the command line
 docker network create "network-name" (bridge is the default network)
 
 docker compose up : démarre tout, ^ C pour arreter tout
-docker compose down : stoppe les containers et supprime les réseaux créés
 
+docker compose down : stoppe les containers et supprime les réseaux créés
+-v : remove volumes but not of type bind
 ## Website and administration pannel
 
 ## Credentials
