@@ -54,7 +54,7 @@ services:
     build: ./requirements/nginx
     container_name: "nginx"
     depends_on:
-      wordpress
+      - wordpress
     volumes:
       - wordpress_data:/etc/data
     networks:
