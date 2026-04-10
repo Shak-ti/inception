@@ -6,8 +6,8 @@ services:
 #   other attribute:
 #     mapping syntax: blabla
   mariadb:
-    image: mariadb
     container_name: "mariadb"
+    build: ./requirements/mariadb
     restart: always
     networks:
       - mynetwork
@@ -29,43 +29,39 @@ services:
       - userpass
       - rootpass
 
-  # wordpress:
-  #   image: wordpress:6.9.4
-  #   container_name: "wordpress"
-  #   restart: always
-  #   expose: # used to define container ports that are exposed for communicating internally with other containers on the same network
-  #     - "9000"
-  #     - "3306"
-  #   depends_on:
-  #     mariadb:
-  #       condition: service_healthy # compose also removes services in dependency order (wordpress before mariadb)
-  #   env_file: ".env"
-  #   environment:
-  #     WORDPRESS_DB_HOST: mariadb
-  #     WORDPRESS_DB_USER: user
-  #     WORDPRESS_DB_PASSWORD_FILE: /run/secrets/userpass
-  #     WORDPRESS_DB_NAME: database
-  #   secrets:
-  #     - userpass
-  #   volumes:
-  #     - wordpress:/etc/data
-  #   networks:
-  #     - mynetwork
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: "wordpress"
+    restart: always
+    expose:
+      - "9000" # used to define container ports that are exposed for communicating internally with other containers on the same network
+    depends_on:
+      mariadb:
+        condition: service_healthy # compose also removes services in dependency order (wordpress before mariadb)
+    env_file: ".env"
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/rootpass
+      - MYSQL_PASSWORD_FILE=/run/secrets/userpass
+    secrets:
+      - userpass
+      - rootpass
+    volumes:
+      - wordpress_data:/etc/data
+    networks:
+      - mynetwork
 
-  # nginx:
-  #   image: nginx:1.29.7
-  #   container_name: "nginx"
-  #   depends_on:
-  #     wordpress
-  #   volumes:
-  #     - wordpress:/etc/data
-  #   networks:
-  #     - mynetwork
-  #   restart: always
-  #   ports: # port mapping between host machine and container
-  #     - "8080:443"
-  #   expose:
-  #     - "9000"
+  nginx:
+    build: ./requirements/nginx
+    container_name: "nginx"
+    depends_on:
+      wordpress
+    volumes:
+      - wordpress_data:/etc/data
+    networks:
+      - mynetwork
+    restart: always
+    ports: # port mapping between host machine and container
+      - "443:443"
 
 networks:
   mynetwork:
@@ -79,7 +75,15 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./database
+      device: /home/${USER}/data/mariadb
+  wordpress_data:
+    name: wordpress_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/wordpress_data
+# long form syntax for bind mounts, à changer
 
   # wordpress:
   #   name: wordpress

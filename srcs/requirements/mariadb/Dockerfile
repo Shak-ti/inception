@@ -9,7 +9,10 @@ FROM debian:12
 # chaque RUN crée un nouveau layer donc faire apt-get blabla && rm -rf fichiersinutiles ou alors multistage build
 # -y -> répond oui automatiquement
 RUN apt update -y && apt upgrade -y
-RUN apt install -y mariadb-server netcat
+RUN apt install -y mariadb-server
+
+# overwrite the config file to make mariadb accessible from outside
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 # Set a working directory for any RUN, CMD, ENTRYPOINT, COPY, and ADD instructions that follow
 WORKDIR /bin

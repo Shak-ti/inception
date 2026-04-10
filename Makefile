@@ -4,8 +4,8 @@ WORDPRESS	= ./srcs/requirements/wordpress/database
 all: up
 
 up:
-	mkdir $(MARIADB)
-	mkdir $(WORDPRESS)
+	mkdir -p $(MARIADB)
+	mkdir -p $(WORDPRESS)
 	docker compose up
 
 start:
