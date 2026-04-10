@@ -15,12 +15,12 @@ services:
       - database:/var/lib/mysql # mariadb writes in /var/lib/mysql by default
     expose:
       - "3306"
-    # healthcheck:
-      # test: ["CMD"]
-      # start_period: 10s
-      # interval: 10s
-      # timeout: 5s
-      # retries: 3
+    healthcheck:
+      test: ["CMD", "nc", "mariadb", "3306"] # ping mariadb to see if it's started
+      start_period: 10s
+      interval: 2s
+      timeout: 5s
+      retries: 10
     env_file: ".env"
     environment: # set up the environment variables
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/rootpass # password for MariaDB root superuser account (_FILE is a convention because i'm using secrets)

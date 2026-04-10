@@ -31,6 +31,7 @@ docker logs : get logs
 docker port "container-name" : see the ports
 
 docker images : list of locally available images (TAG = snashot)
+(ls)
 
 docker search : search for images directly from the command line
 

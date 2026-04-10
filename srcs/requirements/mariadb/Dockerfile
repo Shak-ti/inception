@@ -7,8 +7,9 @@ FROM debian:12
 
 # environment setup
 # chaque RUN crée un nouveau layer donc faire apt-get blabla && rm -rf fichiersinutiles ou alors multistage build
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y mariadb-server netcat
+# -y -> répond oui automatiquement
+RUN apt update -y && apt upgrade -y
+RUN apt install -y mariadb-server netcat
 
 # Set a working directory for any RUN, CMD, ENTRYPOINT, COPY, and ADD instructions that follow
 WORKDIR /bin
@@ -21,6 +22,7 @@ COPY ./tools/script.sh .
 RUN chmod +x script.sh
 
 # EXPOSE marks that our final image has a service listening on port 3306 (not required but good practice)
+# and also good practice to place it near the end of the Dockerfile
 EXPOSE 3306
 
 # CMD lets you define the default program that is run once you start the container based on this image
